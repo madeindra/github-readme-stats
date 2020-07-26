@@ -193,4 +193,4 @@ const renderIndividualValue = (stats = {}, options = { show: [] }) => {
   `;
 };
 
-module.exports = renderStatsCard;
+module.exports = renderIndividualValue;
