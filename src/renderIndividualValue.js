@@ -165,7 +165,7 @@ const renderIndividualValue = (stats = {}, options = { show: [] }) => {
   }
 
   return `
-    <svg width="495" height="${height}" viewBox="0 0 495 ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="75" height="14" viewBox="0 0 75 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${styles}
       </style>
