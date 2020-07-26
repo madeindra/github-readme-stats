@@ -169,12 +169,8 @@ const renderIndividualValue = (stats = {}, options = { show: [] }) => {
       <style>
         ${styles}
       </style>
-      
-      ${border}
-      ${title}
 
       <g data-testid="card-body-content" transform="translate(-25, -55)">
-        ${rankCircle}
 
         <svg x="0" y="55">
           ${FlexLayout({
