@@ -16,8 +16,7 @@ const createTextNode = ({ icon, label, value, id, index, showIcons }) => {
   return `
     <g class="stagger" style="animation-delay: ${staggerDelay}ms" transform="translate(25, 0)">
       ${iconSvg}
-      <text class="stat bold" ${labelOffset} y="12.5">${label}:</text>
-      <text class="stat" x="135" y="12.5" data-testid="${id}">${kValue}</text>
+      <text class="stat" y="12.5" data-testid="${id}">${kValue}</text>
     </g>
   `;
 };
@@ -132,9 +131,7 @@ const renderIndividualValue = (stats = {}, options = { show: [] }) => {
   const border = `
     <rect 
       data-testid="card-bg"
-      x="0.5"
-      y="0.5"
-      width="494"
+      width="50"
       height="99%"
       rx="4.5"
       fill="${bgColor}"
