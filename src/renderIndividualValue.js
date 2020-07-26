@@ -173,9 +173,7 @@ const renderIndividualValue = (stats = {}, options = { show: [] }) => {
       ${border}
       ${title}
 
-      <g data-testid="card-body-content" transform="translate(0, ${
-        hide_title ? -30 : 0
-      })">
+      <g data-testid="card-body-content" transform="translate(-25, -55)">
         ${rankCircle}
 
         <svg x="0" y="55">
