@@ -1,7 +1,7 @@
 require("@testing-library/jest-dom");
 const axios = require("axios");
 const MockAdapter = require("axios-mock-adapter");
-const fetchRepo = require("../src/fetchRepo");
+const fetchRepo = require("../src/fetchers/repo-fetcher");
 
 const data_repo = {
   repository: {
@@ -57,7 +57,7 @@ describe("Test fetchRepo", () => {
       .reply(200, { data: { user: { repository: null }, organization: null } });
 
     await expect(fetchRepo("anuraghazra", "convoychat")).rejects.toThrow(
-      "User Repository Not found"
+      "User Repository Not found",
     );
   });
 
@@ -67,7 +67,7 @@ describe("Test fetchRepo", () => {
       .reply(200, { data: { user: null, organization: { repository: null } } });
 
     await expect(fetchRepo("anuraghazra", "convoychat")).rejects.toThrow(
-      "Organization Repository Not found"
+      "Organization Repository Not found",
     );
   });
 
@@ -77,7 +77,7 @@ describe("Test fetchRepo", () => {
       .reply(200, { data: { user: null, organization: null } });
 
     await expect(fetchRepo("anuraghazra", "convoychat")).rejects.toThrow(
-      "Not found"
+      "Not found",
     );
   });
 
@@ -90,7 +90,7 @@ describe("Test fetchRepo", () => {
     });
 
     await expect(fetchRepo("anuraghazra", "convoychat")).rejects.toThrow(
-      "User Repository Not found"
+      "User Repository Not found",
     );
   });
 });

@@ -5,9 +5,11 @@ const {
   parseArray,
   clampValue,
   CONSTANTS,
-} = require("../src/utils");
-const fetchStats = require("../src/fetchStats");
-const renderStatsCard = require("../src/renderStatsCard");
+} = require("../src/common/utils");
+const fetchStats = require("../src/fetchers/stats-fetcher");
+const renderStatsCard = require("../src/cards/stats-card");
+const blacklist = require("../src/common/blacklist");
+const { isLocaleAvailable } = require("../src/translations");
 
 module.exports = async (req, res) => {
   const {
@@ -18,6 +20,7 @@ module.exports = async (req, res) => {
     hide_rank,
     show_icons,
     count_private,
+    include_all_commits,
     line_height,
     title_color,
     icon_color,
@@ -25,43 +28,55 @@ module.exports = async (req, res) => {
     bg_color,
     theme,
     cache_seconds,
+    custom_title,
+    locale,
   } = req.query;
   let stats;
 
   res.setHeader("Content-Type", "image/svg+xml");
 
-  try {
-    stats = await fetchStats(username, parseBoolean(count_private));
-  } catch (err) {
-    return res.send(
-      renderError(
-        err.message,
-        "Make sure the provided username is not an organization"
-      )
-    );
+  if (blacklist.includes(username)) {
+    return res.send(renderError("Something went wrong"));
   }
 
-  const cacheSeconds = clampValue(
-    parseInt(cache_seconds || CONSTANTS.THIRTY_MINUTES, 10),
-    CONSTANTS.THIRTY_MINUTES,
-    CONSTANTS.ONE_DAY
-  );
+  if (locale && !isLocaleAvailable(locale)) {
+    return res.send(renderError("Something went wrong", "Language not found"));
+  }
 
-  res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
+  try {
+    stats = await fetchStats(
+      username,
+      parseBoolean(count_private),
+      parseBoolean(include_all_commits),
+    );
 
-  res.send(
-    renderStatsCard(stats, {
-      hide: parseArray(hide),
-      show_icons: parseBoolean(show_icons),
-      hide_title: parseBoolean(hide_title),
-      hide_border: parseBoolean(hide_border),
-      hide_rank: parseBoolean(hide_rank),
-      line_height,
-      title_color,
-      icon_color,
-      text_color,
-      bg_color,
-      theme,
-    })
-  );
+    const cacheSeconds = clampValue(
+      parseInt(cache_seconds || CONSTANTS.TWO_HOURS, 10),
+      CONSTANTS.TWO_HOURS,
+      CONSTANTS.ONE_DAY,
+    );
+
+    res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
+
+    return res.send(
+      renderStatsCard(stats, {
+        hide: parseArray(hide),
+        show_icons: parseBoolean(show_icons),
+        hide_title: parseBoolean(hide_title),
+        hide_border: parseBoolean(hide_border),
+        hide_rank: parseBoolean(hide_rank),
+        include_all_commits: parseBoolean(include_all_commits),
+        line_height,
+        title_color,
+        icon_color,
+        text_color,
+        bg_color,
+        theme,
+        custom_title,
+        locale: locale ? locale.toLowerCase() : null,
+      }),
+    );
+  } catch (err) {
+    return res.send(renderError(err.message, err.secondaryMessage));
+  }
 };
